@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>অ্যাডমিন প্যানেল - ভর্তি আবেদন ম্যানেজমেন্ট</title>
+    <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SolaimanLipi', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7fafc;
+            color: #2d3748;
+        }
+
+        /* লগইন পেজ স্টাইল */
+        .login-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #1a202c;
+        }
+
+        .login-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-card h2 {
+            margin-top: 0;
+            text-align: center;
+            color: #1a202c;
+            margin-bottom: 20px;
+        }
+
+        .login-group {
+            margin-bottom: 15px;
+        }
+
+        .login-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 11pt;
+            outline: none;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 10px;
+            background-color: #3182ce;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 12pt;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'SolaimanLipi', sans-serif;
+        }
+
+        /* মূল ড্যাশবোর্ড লেআউট */
+        .admin-container {
+            display: none; 
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: #1a202c;
+            color: #fff;
+            padding: 20px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar h2 {
+            font-size: 14pt;
+            margin-top: 0;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 1px solid #4a5568;
+            padding-bottom: 10px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .sidebar-menu li {
+            padding: 12px 15px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            background-color: #2d3748;
+            transition: background 0.2s;
+            font-weight: bold;
+        }
+
+        .sidebar-menu li:hover {
+            background-color: #4a5568;
+        }
+
+        .btn-logout {
+            background-color: #e53e3e;
+            color: white;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            font-family: 'SolaimanLipi', sans-serif;
+            text-align: center;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            background-color: #fff;
+            padding: 15px 20px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .header-bar h1 {
+            margin: 0;
+            font-size: 16pt;
+        }
+
+        .table-responsive {
+            background-color: #fff;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 11pt;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background-color: #edf2f7;
+            color: #4a5568;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* অ্যাকশন বাটন ডিজাইন */
+        .btn-action {
+            padding: 5px 10px;
+            font-size: 9.5pt;
+            font-weight: bold;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: 'SolaimanLipi', sans-serif;
+            margin-right: 4px;
+        }
+
+        .btn-view { background-color: #3182ce; color: #fff; }
+        .btn-print { background-color: #4a5568; color: #fff; }
+        .btn-edit { background-color: #dd6b20; color: #fff; }
+        .btn-delete { background-color: #e53e3e; color: #fff; }
+
+        /* মোডাল ভিউ উইন্ডো */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-y: auto;
+            padding: 20px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .modal-body {
+            background-color: #fff;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 12mm 15mm;
+            border-radius: 4px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .modal-close-bar {
+            background-color: #f7fafc;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 1001;
+        }
+
+        /* ভিউ শিট ডাটা ফরম্যাটিং */
+        .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; width: 100%; }
+        .header-left-side { width: 35mm; display: flex; justify-content: flex-start; align-items: center; flex-shrink: 0; }
+        .top-logo { width: 60px; height: auto; object-fit: contain; }
+        .header-text { flex-grow: 1; text-align: center; color: #000; }
+        .bismillah { font-size: 13pt; font-weight: bold; margin-bottom: 4px; }
+        .header-text h1 { font-size: 19pt; margin: 2px 0; font-weight: bold; }
+        .subtitle { font-size: 11.5pt; margin: 3px 0; font-weight: bold; }
+        .address { font-size: 11pt; margin: 3px 0; font-weight: bold; }
+        .header-right-side { width: 35mm; display: flex; justify-content: flex-end; align-items: center; flex-shrink: 0; }
+        
+        .photo-box-container {
+            width: 32mm; height: 38mm; border: 2px solid #000000;
+            text-align: center; background-color: #fff; overflow: hidden; position: relative;
+        }
+
+        .section-title-container { text-align: center; margin: 15px 0 10px 0; width: 100%; }
+        .form-title {
+            background-color: transparent; color: #000000; border: 2px solid #000000;
+            display: inline-block; padding: 3px 25px; border-radius: 20px; font-size: 12pt; font-weight: bold;
+        }
+
+        .meta-container { display: flex; justify-content: flex-start; gap: 30px; margin-bottom: 12px; color: #000; }
+        .form-row { display: flex; align-items: center; margin-bottom: 8px; width: 100%; gap: 15px; color: #000; }
+        .form-group { display: flex; align-items: center; min-width: 0; }
+        .full-width-group { width: 100%; display: flex; align-items: center; }
+
+        .view-field {
+            padding: 2px 5px; border: 1px solid #000000; border-radius: 3px;
+            font-size: 10.5pt; font-weight: bold; background-color: #fff;
+            margin-left: 5px; height: 26px; display: flex; align-items: center; color: #000;
+        }
+
+        .edit-input {
+            width: 100%; height: 100%; border: none; outline: none;
+            font-family: 'SolaimanLipi', sans-serif; font-size: 10.5pt; font-weight: bold;
+        }
+
+        .width-small { width: 65px !important; flex: none; }
+        .width-blood { width: 100px !important; flex: none; }
+        .width-medium { width: 120px !important; flex: none; }
+        .width-large { width: 180px !important; flex: none; }
+        .flex-fill { flex: 1; min-width: 0; }
+
+        label { font-weight: bold; color: #000000; white-space: nowrap; display: inline-block; }
+
+        .office-box { border: 2px solid #000000; padding: 10px; border-radius: 5px; margin-top: 10px; }
+        .office-title-container { text-align: center; margin-bottom: 10px; width: 100%; }
+        .office-title {
+            background-color: transparent; color: #000000; border: 1.5px solid #000000;
+            display: inline-block; padding: 2px 20px; font-size: 10.5pt; font-weight: bold; border-radius: 15px;
+        }
+
+        .signatures { display: flex; justify-content: space-between; margin-top: 55px; }
+        .sig-cell { width: 30%; text-align: center; }
+        .sig-line { border-top: 1px solid #000000; width: 90%; margin: 0 auto 5px auto; }
+
+        .undertaking-title-container { text-align: center; margin: 15px 0 20px 0; }
+        .undertaking-text-block { font-size: 11pt; line-height: 1.6; color: #000; }
+        .undertaking-row { display: flex; align-items: flex-start; margin-bottom: 8px; text-align: justify; }
+        .undertaking-num { width: 25px; flex-shrink: 0; font-weight: bold; }
+
+        .footer-blessing { text-align: center; margin-top: 30px; }
+        .blessing-box {
+            display: inline-block; background-color: transparent; color: #000000;
+            border: 2px solid #000000; padding: 4px 30px; font-size: 11.5pt; font-weight: bold; border-radius: 20px;
+        }
+
+        @media print {
+            body * { visibility: hidden; }
+            .modal-overlay { position: absolute; left: 0; top: 0; display: flex !important; background: none; }
+            #printableModalArea, #printableModalArea * { visibility: visible; }
+            #printableModalArea { position: absolute; left: 0; top: 0; width: 210mm; box-shadow: none; padding: 12mm 15mm; }
+            .modal-close-bar { display: none; }
+            
+            .view-field {
+                border: none !important;
+                border-bottom: 1.5px dotted #000000 !important;
+                background-color: transparent !important;
+                border-radius: 0 !important;
+                padding: 0 5px !important;
+                height: auto !important;
+                display: inline-block !important;
+            }
+            .edit-input { border: none !important; background: transparent !important; }
+            .page-break { page-break-after: always; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-wrapper" id="loginWrapper">
+        <div class="login-card">
+            <h2>অ্যাডমিন লগইন</h2>
+            <div class="login-group">
+                <label> ইমেইল</label>
+                <input type="email" id="username" class="login-input" placeholder="admin@email.com">
+            </div>
+            <div class="login-group">
+                <label>পাসওয়ার্ড</label>
+                <input type="password" id="password" class="login-input" placeholder="Password দিন">
+            </div>
+            <button class="btn-login" id="loginBtn" onclick="handleLogin()">প্রবেশ করুন</button>
+        </div>
+    </div>
+
+    <div class="admin-container" id="adminDashboard" style="display: none;">
+        <div class="sidebar">
+            <div>
+                <h2>অ্যাডমিন ড্যাশবোর্ড</h2>
+                <ul class="sidebar-menu">
+                    <li onclick="location.reload()">আবেদনকারী তালিকা</li>
+                </ul>
+            </div>
+            <div>
+                <button class="btn-logout" onclick="handleLogout()">লগ আউট করুন</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="header-bar">
+                <h1>ভর্তি আবেদনকারীদের তালিকা</h1>
+                <div>মোট আবেদন: <span id="totalApplicants">০</span></div>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ফরম নং</th>
+                            <th>নাম (বাংলা)</th>
+                            <th>মোবাইল</th>
+                            <th>ভর্তির ধরণ</th>
+                            <th>আবেদনের তারিখ</th>
+                            <th style="width: 280px; text-align: center;">অ্যাকশন</th>
+                        </tr>
+                    </thead>
+                    <tbody id="applicantsTableBody">
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 30px;">ডাটা লোড হচ্ছে...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="viewModal">
+        <div style="display: flex; flex-direction: column;">
+            <div class="modal-close-bar">
+                <button id="modalSaveBtn" class="btn-action btn-edit" style="background-color: #2b6cb0; display: none;" onclick="saveEditedData()">ডাটা সেভ করুন</button>
+                <button class="btn-action btn-print" onclick="window.print()">প্রিন্ট করুন</button>
+                <button class="btn-action btn-delete" onclick="closeModal()">বন্ধ করুন</button>
+            </div>
+            
+            <div class="modal-body" id="printableModalArea">
+                <div class="page-break" style="margin-bottom: 50px;">
+                    <div class="header-container">
+                        <div class="header-left-side">
+                            <img src="logo.png" alt="Logo" class="top-logo" onerror="this.style.display='none';">
+                        </div>
+                        <div class="header-text">
+                            <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰনِ الرَّحِيمِ</div>
+                            <h1>মফিজউদ্দিন পুনর্বাসন কেন্দ্র ও এতিমখানা</h1>
+                            <div class="subtitle">(আজাদ ফাউন্ডেশন বাংলাদেশ এর একটি প্রতিষ্ঠান)</div>
+                            <div class="address">ধানাইদহ, বড়াইগ্রাম, নাটোর।</div>
+                        </div>
+                        <div class="header-right-side">
+                            <div class="photo-box-container" id="modalPhotoContainer"></div>
+                        </div>
+                    </div>
+
+                    <div class="section-title-container">
+                        <div class="form-title">ভর্তির আবেদন ফরম</div>
+                    </div>
+
+                    <div class="meta-container">
+                        <div class="form-group"><label>ফরম নং :-</label><div class="view-field width-medium" id="m_form_no"></div></div>
+                        <div class="form-group">
+                            <label>ভর্তির ধরণ :-</label>
+                            <div class="view-field width-small" id="m_admission_type"></div>
+                            <div class="view-field width-medium" id="m_residential_type" style="margin-left: 10px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="full-width-group"><label>১। নাম ঃ (বাংলায়)</label><div class="view-field flex-fill" id="m_name_bn"></div></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="full-width-group" style="padding-left: 45px;"><label>ঃ (ইংরেজী)</label><div class="view-field flex-fill" id="m_name_en"></div></div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1.1;"><label>২। পিতার নাম ঃ</label><div class="view-field flex-fill" id="m_father_name"></div></div>
+                        <div class="form-group" style="flex: 1.4;"><label>মৃত্যু সনদ নং (এতিম হলে) ঃ</label><div class="view-field flex-fill" id="m_death_cert_no"></div></div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1.5;"><label>৩। মাতার নাম ঃ</label><div class="view-field flex-fill" id="m_mother_name"></div></div>
+                        <div class="form-group" style="flex: 1;"><label>পেশা ঃ</label><div class="view-field flex-fill" id="m_mother_profession"></div></div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group"><label>৪। জন্ম তারিখ ঃ</label><div class="view-field width-large" id="m_dob"></div></div>
+                        <div class="form-group" style="margin-left: 20px;"><label>রক্তের গ্রুপ ঃ</label><div class="view-field width-blood" id="m_blood_group"></div></div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="full-width-group"><label>৫। বর্তমান ঠিকানা ঃ</label><div class="view-field flex-fill" id="m_current_address"></div></div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;"><label>৬। স্থায়ী ঠিকানা ঃ গ্রাম ঃ</label><div class="view-field flex-fill" id="m_student_village"></div></div>
+                        <div class="form-group" style="flex: 1;"><label>ডাকঘর ঃ</label><div class="view-field flex-fill" id="m_student_post"></div></div>
+                        <div class="form-group" style="flex: 1;"><label>উপজেলা ঃ</label><div class="view-field flex-fill" id="m_student_upazila"></div></div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="padding-left: 95px; flex: 1;"><label>জেলা ঃ</label><div class="view-field flex-fill" id="m_student_district"></div></div>
+                        <div class="form-group" style="flex: 1.5;"><label>মোবাইল ঃ</label><div class="view-field width-large" id="m_student_mobile"></div></div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1.2;"><label>৭। যে শ্রেণীতে ভর্তি হতে ইচ্ছুক ঃ</label><div class="view-field flex-fill" id="m_desired_class"></div></div>
+                        <div class="form-group" style="margin-left: 20px;"><label>পূর্বে যে শ্রেণীতে পড়েছে ঃ</label><div class="view-field width-medium" id="m_previous_class"></div></div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="full-width-group"><label>৮। পূর্বে যে বিদ্যালয়ে পড়েছে ঃ</label><div class="view-field flex-fill" id="m_previous_school"></div></div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;"><label>৯। বিশেষ কোন যোগ্যতা ঃ</label><div class="view-field flex-fill" id="m_special_skill"></div></div>
+                        <div class="form-group" style="flex: 1;"><label>বিশেষ কোন সমস্যা ঃ</label><div class="view-field flex-fill" id="m_special_problem"></div></div>
+                    </div>
+
+                    <div class="form-row" style="margin-top: 25px; justify-content: space-between;">
+                        <div class="form-group"><label>তারিখ ঃ</label><div class="view-field width-large" id="m_application_date"></div></div>
+                        <div class="form-group" style="flex: 0 0 180px; margin-top: 35px;"><span style="border-top: 1px solid #000; width: 100%; display: inline-block; text-align: center;">ছাত্রের স্বাক্ষর</span></div>
+                    </div>
+
+                    <div class="form-row" style="margin-top: 10px;">
+                        <div class="form-group" style="flex: 1.5;"><label>অভিভাবকের নাম ঃ</label><div class="view-field flex-fill" id="m_guardian_name"></div></div>
+                        <div class="form-group" style="flex: 1;"><label>সম্পর্ক ঃ</label><div class="view-field flex-fill" id="m_guardian_relation"></div></div>
+                        <div class="form-group" style="flex: 1;"><label>পেশা ঃ</label><div class="view-field flex-fill" id="m_guardian_profession"></div></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="full-width-group"><label>জাতীয় পরিচয় পত্র নম্বর ঃ</label><div class="view-field flex-fill" id="m_guardian_nid"></div></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="full-width-group"><label>বর্তমান ঠিকানা ঃ</label><div class="view-field flex-fill" id="m_guardian_current_address"></div></div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;"><label>স্থায়ী ঠিকানা ঃ গ্রাম ঃ</label><div class="view-field flex-fill" id="m_guardian_village"></div></div>
+                        <div class="form-group" style="flex: 1;"><label>ডাকঘর ঃ</label><div class="view-field flex-fill" id="m_guardian_post"></div></div>
+                        <div class="form-group" style="flex: 1;"><label>উপজেলা ঃ</label><div class="view-field flex-fill" id="m_guardian_upazila"></div></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group" style="padding-left: 95px; flex: 1;"><label>জেলা ঃ</label><div class="view-field flex-fill" id="m_guardian_district"></div></div>
+                        <div class="form-group" style="flex: 1.5;"><label>মোবাইল ঃ</label><div class="view-field width-large" id="m_guardian_mobile"></div></div>
+                    </div>
+
+                    <div class="form-row" style="margin-top: 12px; justify-content: space-between; gap: 5px;">
+                        <div class="form-group"><label>সেশন ফি ঃ</label><div class="view-field width-small" id="m_session_fee"></div></div>
+                        <div class="form-group"><label>বিদ্যুৎ বিল ঃ</label><div class="view-field width-small" id="m_electricity_bill"></div></div>
+                        <div class="form-group"><label>ভর্তি ফি ঃ</label><div class="view-field width-small" id="m_admission_fee"></div></div>
+                        <div class="form-group"><label>মাসিক বেতন ঃ</label><div class="view-field width-small" id="m_monthly_fee"></div></div>
+                        <div class="form-group"><label>খোরাকী ঃ</label><div class="view-field width-small" id="m_food_fee"></div></div>
+                    </div>
+
+                    <div class="office-box" style="margin-top: 8px;">
+                        <div class="office-title-container"><div class="office-title">অফিস কর্তৃক পূরণীয়</div></div>
+                        <div class="form-row" style="gap: 10px;">
+                            <div class="form-group" style="flex:1;"><label>পরীক্ষকের নাম :</label><div class="view-field flex-fill" id="m_office_examiner"></div></div>
+                            <div class="form-group" style="flex:1;"><label>পরীক্ষার ফলাফল :</label><div class="view-field flex-fill" id="m_office_result"></div></div>
+                            <div class="form-group" style="flex:1;"><label>বার্ষিক পরীক্ষার ফলাফল :</label><div class="view-field flex-fill" id="m_office_annual_result"></div></div>
+                        </div>
+                        <div class="form-row" style="margin-top: 10px;">
+                            <label>উল্লেখিত তথ্যের ভিত্তিতে </label><div class="view-field width-medium" id="m_approved_class" style="justify-content: center;"></div><label style="margin-left: 5px;"> শ্রেণীতে ভর্তির অনুমতি প্রদান করা গেল।</label>
+                        </div>
+                    </div>
+
+                    <div class="signatures" style="margin-top: 45px;">
+                        <div class="sig-cell"><div class="sig-line"></div><label>ناজেমে তালীমাতের স্বাক্ষর</label></div>
+                        <div class="sig-cell"></div>
+                        <div class="sig-cell"><div class="sig-line"></div><label>প্রধান শিক্ষকের স্বাক্ষর</label></div>
+                    </div>
+                </div>
+
+                <div class="page-p2">
+                    <div class="undertaking-title-container"><div class="form-title" style="padding: 5px 40px; font-size: 14pt;">অঙ্গীকার নামা</div></div>
+                    <div class="undertaking-text-block">
+                        <div class="undertaking-row">
+                            <div class="undertaking-num">১।</div>
+                            <div style="width: 100%;">আমি <div class="view-field" id="m_undertaking_name" style="width: 250px; display: inline-flex;"></div> বাংলাদেশের একজন নাগরিক। আমি সমাজ ও রাষ্ট্রবিরোধী কোন কর্মকাণ্ডে অংশগ্রহণ করবো না।</div>
+                        </div>
+                        <div class="undertaking-row"><div class="undertaking-num">২।</div><div>প্রতিষ্ঠানের একজন সদস্য হিসাবে প্রতিষ্ঠানের যাবতীয় আইন-কানুন মেনে চলবো।</div></div>
+                        <div class="undertaking-row"><div class="undertaking-num">৩।</div><div>প্রতিষ্ঠানের সদস্য ও প্রতিবেশীর সম্মান প্রদর্শন ও সদাচারে সচেষ্ট থাকবো।</div></div>
+                        <div class="undertaking-row"><div class="undertaking-num">৪।</div><div>কোন প্রকার অবৈধ জিনিস নিয়ে প্রতিষ্ঠানে প্রবেশ করবো না এবং কেউ দিলে রাখবো না।</div></div>
+                        <div class="undertaking-row"><div class="undertaking-num">৫।</div><div>গোনাহের কোন কাজ করব না এবং গোনাহের কাজে কাউকে প্রশ্রয় দেবো না।</div></div>
+                        <div class="undertaking-row"><div class="undertaking-num">৬।</div><div>নামাজের জামাত চলাকালে প্রতিষ্ঠানের কোথাও ব্যক্তিগত কাজে অবস্থান করবো না।</div></div>
+                        <div class="undertaking-row"><div class="undertaking-num">৭।</div><div>আচার-আচরণ ও চলাফেরায় সুন্নত তরীকা অবলম্বন করবো।</div></div>
+                        <div class="undertaking-row"><div class="undertaking-num">৮।</div><div>বিনা অনুমতিতে institution ত্যাগ করবো না। (হারিয়ে গেলে অথবা দুর্ঘটনার কবলে পড়লে কর্তৃপক্ষ দায়ী থাকবে না)।</div></div>
+                        <div class="undertaking-row"><div class="undertaking-num">৯।</div><div>আমার সন্তান/পোষ্য হারিয়ে গেলে বা দুর্ঘটনার কবলে পড়লে কর্তৃপক্ষ কোনরূপ দায়ী থাকবে না।</div></div>
+                        <div class="undertaking-row"><div class="undertaking-num">১০।</div><div>আবেদনপত্রে স্বাক্ষরকারী অভিভাবক নিজে ছুটি গ্রহণ করবেন এবং নিজেই মাদ্রাসায় নিয়ে আসবেন।</div></div>
+                        <div class="undertaking-row"><div class="undertaking-num">১১।</div><div>প্রতিষ্ঠানকে পরিচ্ছন্ন রাখতে সচেষ্ট থাকবো।</div></div>
+                        <div class="undertaking-row"><div class="undertaking-num">১২।</div><div>পুনর্বাসন কেন্দ্র, এতিমখানা ও ফাউন্ডেশনের মালপত্রকে আমানতদারীর সাথে হেফাজত করবো।</div></div>
+                        <div class="undertaking-row"><div class="undertaking-num">১৩।</div><div>আমার আচরণে অসন্তুষ্ট হয়ে কর্তৃপক্ষ আমার বিরুদ্ধে কোন ব্যবস্থা নিলে তা মেনে নিতে বাধ্য থাকিবো।</div></div>
+                    </div>
+
+                    <div class="signatures" style="margin-top: 110px;">
+                        <div class="sig-cell" style="width: 40%;"><div class="sig-line" style="width: 75%;"></div><label>ছাত্রের স্বাক্ষর</label></div>
+                        <div class="sig-cell" style="width: 20%;"></div>
+                        <div class="sig-cell" style="width: 40%;"><div class="sig-line" style="width: 75%;"></div><label>অভিভাবকের স্বাক্ষর</label></div>
+                    </div>
+                    <div class="footer-blessing"><div class="blessing-box">আল্লাহ আমাদের সহায় হোন- আমীন</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+    <script>
+        // ফায়ারবেস কনফিগ (আপনার আসল ডাটা বসাবেন)
+        const firebaseConfig = {
+             apiKey: "AIzaSyCR5GBRH7x7APnjfAbvRj8WPe84B1Sbs-0",
+             authDomain: "mofizuzzin-ro-center.firebaseapp.com",
+             databaseURL: "https://mofizuzzin-ro-center-default-rtdb.firebaseio.com",
+             projectId: "mofizuzzin-ro-center",
+             storageBucket: "mofizuzzin-ro-center.firebasestorage.app",
+             messagingSenderId: "958997618180",
+             appId: "1:958997618180:web:09a7f1215488f16d23df51",
+             measurementId: "G-2EJQW1LM6P"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        let currentEditingKey = ""; 
+        let allApplicantsData = {};
+
+        // পেজ লোড হবার সময় অথেনটিকেশন সেশন চেক করা
+        window.onload = function() {
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    showDashboard();
+                } else {
+                    showLogin();
+                }
+            });
+        };
+
+        // ফায়ারবেস অথেনটিকেশন দিয়ে লগইন করার ফাংশন
+        function handleLogin() {
+            const emailInput = document.getElementById("username").value.trim();
+            const passwordInput = document.getElementById("password").value.trim();
+            const loginBtn = document.getElementById("loginBtn");
+
+            if (!emailInput || !passwordInput) {
+                alert("দয়া করে ইমেইল এবং পাসওয়ার্ড দুটিই পূরণ করুন!");
+                return;
+            }
+
+            loginBtn.innerText = "যাচাই করা হচ্ছে...";
+            loginBtn.disabled = true;
+
+            // Firebase Auth Sign In
+            firebase.auth().signInWithEmailAndPassword(emailInput, passwordInput)
+            .then((userCredential) => {
+                loginBtn.innerText = "প্রवेश করুন";
+                loginBtn.disabled = false;
+                showDashboard();
+            })
+            .catch((error) => {
+                loginBtn.innerText = "প্রবেশ করুন";
+                loginBtn.disabled = false;
+                console.error("Login Error: ", error.code);
+                
+                if (error.code === "auth/wrong-password" || error.code === "auth/user-not-found") {
+                    alert("ভুল ইমেইল অথবা পাসওয়ার্ড দিয়েছেন! আবার চেষ্টা করুন।");
+                } else if (error.code === "auth/invalid-email") {
+                    alert("ইমেইলের ফরম্যাট সঠিক নয়! (যেমন: admin@email.com)");
+                } else {
+                    alert("লগইন ত্রুটি: " + error.message);
+                }
+            });
+        }
+
+        // লগআউট ফাংশন
+        function handleLogout() {
+            if(confirm("আপনি কি নিশ্চিতভাবে লগ আউট করতে চান?")) {
+                firebase.auth().signOut().then(() => {
+                    showLogin();
+                }).catch((error) => {
+                    alert("লগআউট করতে সমস্যা হয়েছে।");
+                });
+            }
+        }
+
+        function showLogin() {
+            document.getElementById("loginWrapper").style.display = "flex";
+            document.getElementById("adminDashboard").style.display = "none";
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+        }
+
+        function showDashboard() {
+            document.getElementById("loginWrapper").style.display = "none";
+            document.getElementById("adminDashboard").style.display = "flex";
+            loadFirebaseData();
+        }
+
+        // ফায়ারবেস ডাটা লোড ও টেবিল তৈরি
+        function loadFirebaseData() {
+            database.ref('applicants').on('value', (snapshot) => {
+                const tbody = document.getElementById('applicantsTableBody');
+                tbody.innerHTML = "";
+                
+                if(snapshot.exists()) {
+                    allApplicantsData = snapshot.val();
+                    let count = 0;
+                    
+                    Object.keys(allApplicantsData).reverse().forEach(key => {
+                        const item = allApplicantsData[key];
+                        count++;
+                        
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${item.form_no || 'N/A'}</td>
+                            <td>${item.name_bn || 'N/A'}</td>
+                            <td>${item.student_address ? item.student_address.mobile : 'N/A'}</td>
+                            <td>${item.admission_type || 'N/A'} (${item.residential_type || ''})</td>
+                            <td>${item.application_date || 'N/A'}</td>
+                            <td style="text-align: center;">
+                                <button class="btn-action btn-view" onclick="openModal('${key}', 'view')">দেখুন</button>
+                                <button class="btn-action btn-print" onclick="printSingleDirect('${key}')">প্রিন্ট</button>
+                                <button class="btn-action btn-edit" onclick="openModal('${key}', 'edit')">এডিট</button>
+                                <button class="btn-action btn-delete" onclick="deleteApplicant('${key}')">ডিলিট</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                    document.getElementById('totalApplicants').innerText = count;
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 30px;">কোনো রেকর্ড খুঁজে পাওয়া যায়নি।</td></tr>`;
+                    document.getElementById('totalApplicants').innerText = "০";
+                }
+            });
+        }
+
+        // মোডাল ভিউ অথবা এডিট মোডে ওপেন করার ফাংশন
+        function openModal(key, mode) {
+            const data = allApplicantsData[key];
+            if(!data) return;
+            currentEditingKey = key;
+
+            const isEdit = (mode === 'edit');
+            document.getElementById('modalSaveBtn').style.display = isEdit ? 'inline-block' : 'none';
+
+            function setField(elementId, value) {
+                const target = document.getElementById(elementId);
+                if(isEdit) {
+                    target.innerHTML = `<input type="text" class="edit-input" id="input_${elementId}" value="${value || ''}">`;
+                } else {
+                    target.innerText = value || '';
+                }
+            }
+
+            setField('m_form_no', data.form_no);
+            setField('m_admission_type', data.admission_type);
+            setField('m_residential_type', data.residential_type);
+            setField('m_name_bn', data.name_bn);
+            setField('m_name_en', data.name_en);
+            setField('m_father_name', data.father_name);
+            setField('m_death_cert_no', data.death_cert_no);
+            setField('m_mother_name', data.mother_name);
+            setField('m_mother_profession', data.mother_profession);
+            setField('m_dob', data.dob);
+            setField('m_blood_group', data.blood_group);
+            setField('m_current_address', data.current_address);
+
+            if(data.student_address) {
+                setField('m_student_village', data.student_address.village);
+                setField('m_student_post', data.student_address.post);
+                setField('m_student_upazila', data.student_address.upazila);
+                setField('m_student_district', data.student_address.district);
+                setField('m_student_mobile', data.student_address.mobile);
+            }
+
+            setField('m_desired_class', data.desired_class);
+            setField('m_previous_class', data.previous_class);
+            setField('m_previous_school', data.previous_school);
+            setField('m_special_skill', data.special_skill);
+            setField('m_special_problem', data.special_problem);
+            setField('m_application_date', data.application_date);
+
+            if(data.guardian) {
+                setField('m_guardian_name', data.guardian.name);
+                setField('m_guardian_relation', data.guardian.relation);
+                setField('m_guardian_profession', data.guardian.profession);
+                setField('m_guardian_nid', data.guardian.nid);
+                setField('m_guardian_current_address', data.guardian.current_address);
+                setField('m_guardian_village', data.guardian.village);
+                setField('m_guardian_post', data.guardian.post);
+                setField('m_guardian_upazila', data.guardian.upazila);
+                setField('m_guardian_district', data.guardian.district);
+                setField('m_guardian_mobile', data.guardian.mobile);
+            }
+
+            if(data.fees) {
+                setField('m_session_fee', data.fees.session);
+                setField('m_electricity_bill', data.fees.electricity);
+                setField('m_admission_fee', data.fees.admission);
+                setField('m_monthly_fee', data.fees.monthly);
+                setField('m_food_fee', data.fees.food);
+            }
+
+            if(data.office_use) {
+                setField('m_office_examiner', data.office_use.examiner);
+                setField('m_office_result', data.office_use.result);
+                setField('m_office_annual_result', data.office_use.annual_result);
+                setField('m_approved_class', data.office_use.approved_class);
+            }
+            setField('m_undertaking_name', data.undertaking_name);
+
+            const photoContainer = document.getElementById('modalPhotoContainer');
+            if(data.imageUrl) {
+                photoContainer.innerHTML = `<img src="${data.imageUrl}" style="width:100%; height:100%; object-fit:cover;">`;
+            } else {
+                photoContainer.innerHTML = `<div style="font-size:9pt; padding-top:40px; color:#aaa;">ছবি নেই</div>`;
+            }
+
+            document.getElementById('viewModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        // এডিট করা ডাটা ফায়ারবেসে আপডেট/সেভ করার ফাংশন
+        function saveEditedData() {
+            if(!currentEditingKey) return;
+
+            function getVal(id) {
+                const el = document.getElementById("input_" + id);
+                return el ? el.value : "";
+            }
+
+            const updatedData = {
+                form_no: getVal('m_form_no'),
+                admission_type: getVal('m_admission_type'),
+                residential_type: getVal('m_residential_type'),
+                name_bn: getVal('m_name_bn'),
+                name_en: getVal('m_name_en'),
+                father_name: getVal('m_father_name'),
+                death_cert_no: getVal('m_death_cert_no'),
+                mother_name: getVal('m_mother_name'),
+                mother_profession: getVal('m_mother_profession'),
+                dob: getVal('m_dob'),
+                blood_group: getVal('m_blood_group'),
+                current_address: getVal('m_current_address'),
+                student_address: {
+                    village: getVal('m_student_village'),
+                    post: getVal('m_student_post'),
+                    upazila: getVal('m_student_upazila'),
+                    district: getVal('m_student_district'),
+                    mobile: getVal('m_student_mobile')
+                },
+                desired_class: getVal('m_desired_class'),
+                previous_class: getVal('m_previous_class'),
+                previous_school: getVal('m_previous_school'),
+                special_skill: getVal('m_special_skill'),
+                special_problem: getVal('m_special_problem'),
+                application_date: getVal('m_application_date'),
+                guardian: {
+                    name: getVal('m_guardian_name'),
+                    relation: getVal('m_guardian_relation'),
+                    profession: getVal('m_guardian_profession'),
+                    nid: getVal('m_guardian_nid'),
+                    current_address: getVal('m_guardian_current_address'),
+                    village: getVal('m_guardian_village'),
+                    post: getVal('m_guardian_post'),
+                    upazila: getVal('m_guardian_upazila'),
+                    district: getVal('m_guardian_district'),
+                    mobile: getVal('m_guardian_mobile')
+                },
+                fees: {
+                    session: getVal('m_session_fee'),
+                    electricity: getVal('m_electricity_bill'),
+                    admission: getVal('m_admission_fee'),
+                    monthly: getVal('m_monthly_fee'),
+                    food: getVal('m_food_fee')
+                },
+                office_use: {
+                    examiner: getVal('m_office_examiner'),
+                    result: getVal('m_office_result'),
+                    annual_result: getVal('m_office_annual_result'),
+                    approved_class: getVal('m_approved_class')
+                },
+                undertaking_name: getVal('m_undertaking_name'),
+                imageUrl: allApplicantsData[currentEditingKey].imageUrl || "" 
+            };
+
+            database.ref('applicants').child(currentEditingKey).update(updatedData)
+            .then(() => {
+                alert("ডাটা সফলভাবে আপডেট করা হয়েছে!");
+                closeModal();
+            })
+            .catch((error) => {
+                alert("আপডেট করতে সমস্যা হয়েছে।");
+            });
+        }
+
+        function printSingleDirect(key) {
+            openModal(key, 'view');
+            setTimeout(() => { window.print(); }, 500);
+        }
+
+        function closeModal() {
+            document.getElementById('viewModal').style.display = 'none';
+            document.body.style.overflow = 'auto'; 
+            currentEditingKey = "";
+        }
+
+        function deleteApplicant(key) {
+            if(confirm("আপনি কি নিশ্চিতভাবে এই আবেদনটি ডাটাবেজ থেকে ডিলিট করতে চান?")) {
+                database.ref('applicants').child(key).remove()
+                .then(() => { alert("আবেদনটি সফলভাবে ডিলিট করা হয়েছে।"); })
+                .catch((error) => { alert("ডিলিট করতে সমস্যা হয়েছে।"); });
+            }
+        }
+    </script>
+</body>
+</html>

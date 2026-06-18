@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ভর্তি আবেদন ফরম ও অঙ্গীকার নামা</title>
+    <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SolaimanLipi', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #000000;
+            line-height: 1.4;
+            font-size: 11pt;
+            font-weight: bold;
+            background-color: #f0f4f8;
+        }
+
+        .page {
+            background-color: #ffffff;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 12mm 15mm;
+            margin: 20px auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        /* হেডার লেআউট */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+
+        .header-left-side {
+            width: 35mm;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .top-logo {
+            width: 60px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .header-text {
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .bismillah { font-size: 13pt; font-weight: bold; margin-bottom: 4px; }
+        h1 { font-size: 19pt; margin: 2px 0; font-weight: bold; }
+        .subtitle { font-size: 11.5pt; margin: 3px 0; font-weight: bold; }
+        .address { font-size: 11pt; margin: 3px 0; font-weight: bold; }
+
+        .header-right-side {
+            width: 35mm;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .photo-box-container {
+            width: 32mm;
+            height: 38mm;
+            border: 2px solid #000000;
+            text-align: center;
+            background-color: #fff;
+            cursor: pointer;
+            overflow: hidden;
+            flex-shrink: 0;
+            position: relative;
+        }
+        
+        .photo-placeholder {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            font-size: 10.5pt;
+            color: #000;
+        }
+
+        .upload-loading {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 9pt;
+            color: #2b6cb0;
+            font-weight: bold;
+        }
+
+        .section-title-container { 
+            text-align: center; 
+            margin: 15px 0 10px 0; 
+            width: 100%;
+        }
+        
+        .form-title {
+            background-color: transparent;
+            color: #000000;
+            border: 2px solid #000000;
+            display: inline-block;
+            padding: 3px 25px;
+            border-radius: 20px;
+            font-size: 12pt;
+            font-weight: bold;
+        }
+
+        .meta-container {
+            display: flex;
+            justify-content: flex-start;
+            gap: 30px;
+            margin-bottom: 12px;
+        }
+
+        .form-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            width: 100%;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            min-width: 0;
+        }
+
+        .full-width-group {
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="text"], input[type="date"], select {
+            padding: 2px 5px;
+            border: 1px solid #000000;
+            border-radius: 3px;
+            font-size: 10.5pt;
+            font-weight: bold;
+            font-family: 'SolaimanLipi', sans-serif;
+            background-color: #fff;
+            outline: none;
+            margin-left: 5px;
+            height: 26px;
+        }
+
+        .same-address-checkbox {
+            font-size: 9.5pt;
+            color: #2b6cb0;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .width-small { width: 65px !important; flex: none; }
+        .width-blood { width: 100px !important; flex: none; }
+        .width-medium { width: 120px !important; flex: none; }
+        .width-large { width: 180px !important; flex: none; }
+        .flex-fill { flex: 1; min-width: 0; }
+
+        label {
+            font-weight: bold;
+            color: #000000;
+            white-space: nowrap;
+            display: inline-block;
+        }
+
+        .office-box {
+            border: 2px solid #000000;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .office-title-container {
+            text-align: center;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        .office-title {
+            background-color: transparent;
+            color: #000000;
+            border: 1.5px solid #000000;
+            display: inline-block;
+            padding: 2px 20px;
+            font-size: 10.5pt;
+            font-weight: bold;
+            border-radius: 15px;
+        }
+
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 55px;
+        }
+        .sig-cell {
+            width: 30%;
+            text-align: center;
+        }
+        .sig-line {
+            border-top: 1px solid #000000;
+            width: 90%;
+            margin: 0 auto 5px auto;
+        }
+
+        .undertaking-title-container {
+            text-align: center;
+            margin: 15px 0 20px 0;
+        }
+        .undertaking-text-block {
+            font-size: 11pt;
+            line-height: 1.6;
+        }
+        .undertaking-row {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            text-align: justify;
+        }
+        .undertaking-num {
+            width: 25px;
+            flex-shrink: 0;
+            font-weight: bold;
+        }
+
+        .footer-blessing { 
+            text-align: center; 
+            margin-top: 30px; 
+        }
+        .blessing-box {
+            display: inline-block;
+            background-color: transparent;
+            color: #000000;
+            border: 2px solid #000000;
+            padding: 4px 30px;
+            font-size: 11.5pt;
+            font-weight: bold;
+            border-radius: 20px;
+        }
+
+        .action-bar-bottom {
+            max-width: 210mm;
+            margin: 15px auto 40px auto;
+            padding: 15px;
+            background-color: #ffffff;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 25px;
+            font-size: 12pt;
+            font-weight: bold;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 10px;
+            font-family: 'SolaimanLipi', sans-serif;
+        }
+        .btn-submit { background-color: #2b6cb0; }
+        .btn-print { background-color: #4a5568; }
+
+        @media print {
+            body { background-color: #ffffff; }
+            .action-bar-bottom, .same-address-checkbox { display: none !important; }
+            .page {
+                width: 210mm;
+                box-shadow: none;
+                padding: 12mm 15mm;
+                margin: 0;
+                page-break-after: always;
+            }
+            
+            input[type="text"], input[type="date"], select {
+                border: none !important;
+                border-bottom: 1.5px dotted #000000 !important;
+                background-color: transparent !important;
+                border-radius: 0 !important;
+                padding: 0 5px !important;
+                height: auto !important;
+            }
+            
+            select {
+                appearance: none;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <form id="admissionForm">
+        
+        <div class="page" id="page-1">
+            
+            <div class="header-container">
+                <div class="header-left-side">
+                    <img src="logo.png" alt="Logo" class="top-logo" onerror="this.style.display='none';">
+                </div>
+
+                <div class="header-text">
+                    <div class="bismillah"> بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ </div>
+                    <h1>মফিজউদ্দিন পুনর্বাসন কেন্দ্র ও এতিমখানা</h1>
+                    <div class="subtitle">(আজাদ ফাউন্ডেশন বাংলাদেশ এর একটি প্রতিষ্ঠান)</div>
+                    <div class="address">ধানাইদহ, বড়াইগ্রাম, নাটোর।</div>
+                </div>
+
+                <div class="header-right-side">
+                    <div class="photo-box-container" onclick="document.getElementById('photoInput').click()">
+                        <div class="photo-placeholder" id="photoText">
+                            <span>ছবি</span>
+                            <span style="font-size: 8.5pt; margin-top:2px;">পাসপোর্ট সাইজ</span>
+                        </div>
+                        <div id="uploadLoader" class="upload-loading" style="display: none;">আপলোড হচ্ছে...</div>
+                        <input type="file" id="photoInput" accept="image/*" style="display:none;" onchange="handlePhotoUpload(this)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title-container">
+                <div class="form-title">ভর্তির আবেদন ফরম</div>
+            </div>
+
+            <div class="meta-container">
+                <div class="form-group">
+                    <label>ফরম নং :-</label>
+                    <input type="text" id="form_no" class="width-medium" required>
+                </div>
+                <div class="form-group">
+                    <label>ভর্তির ধরণ :-</label>
+                    <select id="admission_type" class="width-small">
+                        <option value="নতুন">নতুন</option>
+                        <option value="পুরাতন">পুরাতন</option>
+                    </select>
+                    <select id="residential_type" class="width-medium" style="margin-left: 10px;">
+                        <option value="আবাসিক">আবাসিক</option>
+                        <option value="অনাবাসিক">অনাবাসিক</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="full-width-group">
+                    <label>১। নাম ঃ (বাংলায়)</label>
+                    <input type="text" id="name_bn" class="flex-fill" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="full-width-group" style="padding-left: 45px;">
+                    <label>ঃ (ইংরেজী)</label>
+                    <input type="text" id="name_en" class="flex-fill" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex: 1.1;">
+                    <label>২। পিতার নাম ঃ</label>
+                    <input type="text" id="father_name" class="flex-fill" required>
+                </div>
+                <div class="form-group" style="flex: 1.4;">
+                    <label>মৃত্যু সনদ নং (এতিম হলে) ঃ</label>
+                    <input type="text" id="death_cert_no" class="flex-fill">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex: 1.5;">
+                    <label>৩। মাতার নাম ঃ</label>
+                    <input type="text" id="mother_name" class="flex-fill" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>পেশা ঃ</label>
+                    <input type="text" id="mother_profession" class="flex-fill">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>৪। জন্ম তারিখ ঃ (জন্ম সনদ অনুযায়ী)</label>
+                    <input type="date" id="dob" class="width-large" required>
+                </div>
+                <div class="form-group" style="margin-left: 20px;">
+                    <label>রক্তের গ্রুপ ঃ</label>
+                    <input type="text" id="blood_group" class="width-blood"> 
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="full-width-group">
+                    <label>৫। বর্তমান ঠিকানা ঃ</label>
+                    <input type="text" id="current_address" class="flex-fill" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex: 1;">
+                    <label>৬। স্থায়ী ঠিকানা ঃ গ্রাম ঃ</label>
+                    <input type="text" id="student_village" class="flex-fill" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>ডাকঘর ঃ</label>
+                    <input type="text" id="student_post" class="flex-fill" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>উপজেলা ঃ</label>
+                    <input type="text" id="student_upazila" class="flex-fill" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="padding-left: 95px; flex: 1;">
+                    <label>জেলা ঃ</label>
+                    <input type="text" id="student_district" class="flex-fill" required>
+                </div>
+                <div class="form-group" style="flex: 1.5;">
+                    <label>মোবাইল ঃ</label>
+                    <input type="text" id="student_mobile" class="width-large" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex: 1.2;">
+                    <label>৭। যে শ্রেণীতে ভর্তি হতে ইচ্ছুক ঃ</label>
+                    <input type="text" id="desired_class" class="flex-fill" required>
+                </div>
+                <div class="form-group" style="margin-left: 20px;">
+                    <label> পূর্বে যে শ্রেণীতে পড়েছে ঃ</label>
+                    <input type="text" id="previous_class" class="width-medium"> 
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="full-width-group">
+                    <label>৮। পূর্বে যে বিদ্যালয়ে পড়েছে ঃ</label>
+                    <input type="text" id="previous_school" class="flex-fill">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex: 1;">
+                    <label>৯। বিশেষ কোন যোগ্যতা ঃ</label>
+                    <input type="text" id="special_skill" class="flex-fill">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>বিশেষ কোন সমস্যা ঃ</label>
+                    <input type="text" id="special_problem" class="flex-fill">
+                </div>
+            </div>
+
+            <div class="form-row" style="margin-top: 25px; justify-content: space-between;">
+                <div class="form-group" style="flex: none;">
+                    <label>তারিখ ঃ</label>
+                    <input type="date" id="application_date" class="width-large" required>
+                </div>
+                <div class="form-group" style="flex: 0 0 180px; margin-top: 35px;">
+                    <span style="border-top: 1px solid #000000; width: 100%; display: inline-block; text-align: center;">ছাত্রের স্বাক্ষর</span>
+                </div>
+            </div>
+
+            <div class="form-row" style="margin-top: 10px;">
+                <div class="form-group" style="flex: 1.5;">
+                    <label>অভিভাবকের নাম ঃ</label>
+                    <input type="text" id="guardian_name" class="flex-fill" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>সম্পর্ক ঃ</label>
+                    <input type="text" id="guardian_relation" class="flex-fill" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>পেশা ঃ</label>
+                    <input type="text" id="guardian_profession" class="flex-fill" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="full-width-group">
+                    <label>জাতীয় পরিচয় পত্র নম্বর ঃ</label>
+                    <input type="text" id="guardian_nid" class="flex-fill" required>
+                </div>
+            </div>
+
+            <div class="same-address-checkbox">
+                <input type="checkbox" id="sameAddressToggle" onchange="copyStudentAddress()" style="width:16px; height:16px; cursor:pointer;">
+                <label for="sameAddressToggle" style="margin-left: 5px; font-size: 10pt; color: #2b6cb0; cursor:pointer;">ছাত্রের বর্তমান ও স্থায়ী ঠিকানা একই হলে এখানে টিক দিন</label>
+            </div>
+
+            <div class="form-row">
+                <div class="full-width-group">
+                    <label>বর্তমান ঠিকানা ঃ</label>
+                    <input type="text" id="guardian_current_address" class="flex-fill" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex: 1;">
+                    <label>স্থায়ী ঠিকানা ঃ গ্রাম ঃ</label>
+                    <input type="text" id="guardian_village" class="flex-fill" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>ডাকঘর ঃ</label>
+                    <input type="text" id="guardian_post" class="flex-fill" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>উপজেলা ঃ</label>
+                    <input type="text" id="guardian_upazila" class="flex-fill" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="padding-left: 95px; flex: 1;">
+                    <label>জেলা ঃ</label>
+                    <input type="text" id="guardian_district" class="flex-fill" required>
+                </div>
+                <div class="form-group" style="flex: 1.5;">
+                    <label>মোবাইল ঃ</label>
+                    <input type="text" id="guardian_mobile" class="width-large" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group"><label>সেশন ফি ঃ</label><input type="text" id="session_fee" class="width-small"></div>
+                <div class="form-group"><label>বিদ্যুৎ বিল ঃ</label><input type="text" id="electricity_bill" class="width-small"></div>
+                <div class="form-group"><label>ভর্তি ফি ঃ</label><input type="text" id="admission_fee" class="width-small"></div>
+                <div class="form-group"><label>মাসিক বেতন ঃ</label><input type="text" id="monthly_fee" class="width-small"></div>
+                <div class="form-group"><label>খোরাকী ঃ</label><input type="text" id="food_fee" class="width-small"></div>
+            </div>
+
+            <div class="form-row" style="margin-top: 10px;">
+                <div class="form-group" style="align-items: flex-start; width: 100%;">
+                    <label style="font-size: 9.5pt;">সংযুক্ত প্রমাণ পত্র ঃ</label>
+                    <span style="font-size: 9.5pt; margin-left: 5px; font-weight: normal; line-height: 1.4;">
+                        (১) ছাত্রের জন্ম সনদের ফটোকপি। (২) পিতার জন্ম সনদের ফটোকপি। (৩) অভিভাবকের জাতীয় পরিচয় পত্রের ফটোকপি। (৪) পূর্বের প্রতিষ্ঠানের ছাড়পত্র/প্রশংসা পত্র।
+                    </span>
+                </div>
+            </div>
+
+            <div class="office-box" style="margin-top: 8px;">
+                <div class="office-title-container">
+                    <div class="office-title">অফিস কর্তৃক পূরণীয়</div>
+                </div>
+                <div class="form-row" style="gap: 10px;">
+                    <div class="form-group" style="flex:1;"><label>পরীক্ষকের নাম :</label><input type="text" id="office_examiner" class="flex-fill"></div>
+                    <div class="form-group" style="flex:1;"><label>পরীক্ষার ফলাফল :</label><input type="text" id="office_result" class="flex-fill"></div>
+                    <div class="form-group" style="flex:1;"><label>বার্ষিক পরীক্ষার ফলাফল :</label><input type="text" id="office_annual_result" class="flex-fill"></div>
+                </div>
+                <div class="form-row" style="margin-top: 10px; display: flex; align-items: center; width: 100%;">
+                    <label>উল্লেখিত তথ্যের ভিত্তিতে </label>
+                    <input type="text" id="approved_class" class="width-medium" style="text-align: center;"> 
+                    <label style="margin-left: 5px;"> শ্রেণীতে ভর্তির অনুমতি প্রদান করা গেল।</label>
+                </div>
+            </div>
+
+            <div class="signatures" style="margin-top: 45px;">
+                <div class="sig-cell">
+                    <div class="sig-line"></div>
+                    <label>নাজেমে তালীমাতের স্বাক্ষর</label>
+                </div>
+                <div class="sig-cell"></div>
+                <div class="sig-cell">
+                    <div class="sig-line"></div>
+                    <label>প্রধান শিক্ষকের স্বাক্ষর</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page-2">
+            <div class="undertaking-title-container">
+                <div class="form-title" style="padding: 5px 40px; font-size: 14pt;">অঙ্গাকার নামা</div>
+            </div>
+
+            <div class="undertaking-text-block">
+                <div class="undertaking-row">
+                    <div class="undertaking-num">১।</div>
+                    <div style="width: 100%;">আমি <input type="text" id="undertaking_name" style="width: 250px; display: inline-block; border: none; border-bottom: 1px dotted #000000; padding: 1px 5px; flex: none;"> বাংলাদেশের একজন নাগরিক। আমি সমাজ ও রাষ্ট্রবিরোধী কোন কর্মকাণ্ডে অংশগ্রহণ করবো না।</div>
+                </div>
+                <div class="undertaking-row"><div class="undertaking-num">২।</div><div>প্রতিষ্ঠানের একজন সদস্য হিসাবে প্রতিষ্ঠানের যাবতীয় আইন-কানুন মেনে চলবো।</div></div>
+                <div class="undertaking-row"><div class="undertaking-num">৩।</div><div>প্রতিষ্ঠানের সদস্য ও প্রতিবেশীর সম্মান প্রদর্শন ও সদাচারে সচেষ্ট থাকবো।</div></div>
+                <div class="undertaking-row"><div class="undertaking-num">৪।</div><div>কোন প্রকার অবৈধ জিনিস নিয়ে প্রতিষ্ঠানে প্রবেশ করবো না এবং কেউ দিলে রাখবো না (প্রশাসনিক দন্ডের জন্য কর্তৃপক্ষ দায়ী থাকবে না)।</div></div>
+                <div class="undertaking-row"><div class="undertaking-num">৫।</div><div>গোনাহের কোন কাজ করব না এবং গোনাহের কাজে কাউকে প্রশ্রয় দেবো না।</div></div>
+                <div class="undertaking-row"><div class="undertaking-num">৬।</div><div>নামাজের জামাত চলাকালে প্রতিষ্ঠানের কোথাও ব্যক্তিগত কাজে অবস্থান করবো না।</div></div>
+                <div class="undertaking-row"><div class="undertaking-num">৭।</div><div>আচার-আচরণ ও চলাফেরায় সুন্নত তরীকা অবলম্বন করবো।</div></div>
+                <div class="undertaking-row"><div class="undertaking-num">৮।</div><div>বিনা অনুমতিতে প্রতিষ্ঠান ত্যাগ করবো না। (হারিয়ে গেলে অথবা কোন দুর্ঘটনার কবলে পড়লে কর্তৃপক্ষ দায়ী থাকবে না)।</div></div>
+                <div class="undertaking-row"><div class="undertaking-num">৯।</div><div>আমার সন্তান/পোষ্য হারিয়ে গেলে বা দুর্ঘটনার কবলে পড়লে কর্তৃপক্ষ কোনরূপ দায়ী থাকবে না।</div></div>
+                <div class="undertaking-row"><div class="undertaking-num">১০।</div><div>আবেদনপত্রে স্বাক্ষরকারী অভিভাবক নিজে ছুটি গ্রহণ করবেন এবং নিজেই মাদ্রাসায় নিয়ে আসবেন।</div></div>
+                <div class="undertaking-row"><div class="undertaking-num">১১।</div><div>প্রতিষ্ঠানকে পরিচ্ছন্ন রাখতে সচেষ্ট থাকবো।</div></div>
+                <div class="undertaking-row"><div class="undertaking-num">১২।</div><div>পুনর্বাসন কেন্দ্র, এতিমখানা ও ফাউন্ডেশনের মালপত্রকে আমানতদারীর সাথে হেফাজত করবো।</div></div>
+                <div class="undertaking-row"><div class="undertaking-num">১৩।</div><div>আমার আচরণে অসন্তুষ্ট হয়ে কর্তৃপক্ষ আমার বিরুদ্ধে কোন ব্যবস্থা নিলে তা মেনে নিতে বাধ্য থাকিবো।</div></div>
+            </div>
+
+            <div class="signatures" style="margin-top: 110px;">
+                <div class="sig-cell" style="width: 40%;">
+                    <div class="sig-line" style="width: 75%;"></div>
+                    <label>ছাত্রের স্বাক্ষর</label>
+                </div>
+                <div class="sig-cell" style="width: 20%;"></div>
+                <div class="sig-cell" style="width: 40%;">
+                    <div class="sig-line" style="width: 75%;"></div>
+                    <label>অভিভাবকের স্বাক্ষর</label>
+                </div>
+            </div>
+
+            <div class="footer-blessing">
+                <div class="blessing-box">আল্লাহ আমাদের সহায় হোন- আমীন</div>
+            </div>
+        </div>
+
+        <div class="action-bar-bottom">
+            <button type="submit" class="btn btn-submit" id="submitBtn">সাবমিট করুন</button>
+            <button type="button" class="btn btn-print" onclick="window.print()">প্রিন্ট / পিডিএফ ডাউনলোড</button>
+        </div>
+
+    </form>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        // 🎯 আপনার দেওয়া নতুন ফায়ারবেস কনফিগারেশন এখানে আপডেট করা হলো
+        const firebaseConfig = {
+            apiKey: "AIzaSyCR5GBRH7x7APnjfAbvRj8WPe84B1Sbs-0",
+            authDomain: "mofizuzzin-ro-center.firebaseapp.com",
+            databaseURL: "https://mofizuzzin-ro-center-default-rtdb.firebaseio.com",
+            projectId: "mofizuzzin-ro-center",
+            storageBucket: "mofizuzzin-ro-center.firebasestorage.app",
+            messagingSenderId: "958997618180",
+            appId: "1:958997618180:web:09a7f1215488f16d23df51",
+            measurementId: "G-2EJQW1LM6P"
+        };
+        
+        // ফায়ারবেস রিয়েলটাইম ডাটাবেজ ইনিশিয়ালাইজেশন
+        let database;
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            database = firebase.database();
+        } catch (e) {
+            console.error("Firebase Initialization Error:", e);
+        }
+
+        // আপনার ImgBB API Key
+        const ImgBB_API_KEY = "272ee4ecd41c7441ab3caaa9fe0279e6"; 
+        let uploadedImageUrl = "";
+
+        // বর্তমান ও স্থায়ী ঠিকানা কপি করার ফাংশন
+        function copyStudentAddress() {
+            const checkBox = document.getElementById("sameAddressToggle");
+            if (checkBox.checked) {
+                document.getElementById("guardian_current_address").value = document.getElementById("current_address").value;
+                document.getElementById("guardian_village").value = document.getElementById("student_village").value;
+                document.getElementById("guardian_post").value = document.getElementById("student_post").value;
+                document.getElementById("guardian_upazila").value = document.getElementById("student_upazila").value;
+                document.getElementById("guardian_district").value = document.getElementById("student_district").value;
+            } else {
+                document.getElementById("guardian_current_address").value = "";
+                document.getElementById("guardian_village").value = "";
+                document.getElementById("guardian_post").value = "";
+                document.getElementById("guardian_upazila").value = "";
+                document.getElementById("guardian_district").value = "";
+            }
+        }
+
+        // ডেট ফরম্যাটার (DD/MM/YYYY)
+        function formatDateToDDMMYYYY(dateString) {
+            if (!dateString || typeof dateString !== 'string') return "";
+            const parts = dateString.split("-");
+            if (parts.length === 3) {
+                return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+            return dateString;
+        }
+
+        // ImgBB সার্ভারে ছবি আপলোড হ্যান্ডলার
+        function handlePhotoUpload(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                if (!ImgBB_API_KEY) {
+                    alert("দয়া করে ImgBB API কী-টি নিশ্চিত করুন।");
+                    return;
+                }
+                document.getElementById('uploadLoader').style.display = 'flex';
+                const formData = new FormData();
+                formData.append("image", file);
+
+                fetch(`https://api.imgbb.com/1/upload?key=${ImgBB_API_KEY}`, {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('uploadLoader').style.display = 'none';
+                    if (data.success) {
+                        uploadedImageUrl = data.data.url;
+                        document.getElementById('photoText').innerHTML = `<img src="${uploadedImageUrl}" style="width:100%; height:100%; object-fit:cover;">`;
+                        alert("ছবিটি সফলভাবে আপলোড হয়েছে!");
+                    } else {
+                        alert("আপলোড ব্যর্থ হয়েছে।");
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('uploadLoader').style.display = 'none';
+                    alert("নেটওয়ার্ক সমস্যা বা ভুল API Key এর কারণে ছবি আপলোড হয়নি।");
+                });
+            }
+        }
+
+        // 🛠️ ফরম সাবমিট লিসেনার ইন্টারসেপ্ট ও ডাটাবেজ পুশ লজিক
+        document.getElementById('admissionForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // ব্রাউজার পেজ রিলোড লক করা হলো
+
+            const form = this;
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // ব্রাউজার ভ্যালিডেশন চেক
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            if (!database) {
+                alert("ত্রুটি: Firebase ডাটাবেজের সাথে সংযোগ স্থাপন করা সম্ভব হয়নি।");
+                return;
+            }
+
+            // বাটন সাময়িকভাবে ডিজেবল করা
+            submitBtn.disabled = true;
+            submitBtn.innerText = "সাবমিট হচ্ছে...";
+
+            const rawDob = document.getElementById('dob').value;
+            const rawAppDate = document.getElementById('application_date').value;
+
+            // ডাটা অবজেক্ট তৈরি
+            const applicationData = {
+                form_no: document.getElementById('form_no').value,
+                admission_type: document.getElementById('admission_type').value,
+                residential_type: document.getElementById('residential_type').value,
+                imageUrl: uploadedImageUrl || "",
+                name_bn: document.getElementById('name_bn').value,
+                name_en: document.getElementById('name_en').value,
+                father_name: document.getElementById('father_name').value,
+                death_cert_no: document.getElementById('death_cert_no').value || "",
+                mother_name: document.getElementById('mother_name').value,
+                mother_profession: document.getElementById('mother_profession').value || "",
+                dob: formatDateToDDMMYYYY(rawDob),
+                blood_group: document.getElementById('blood_group').value || "",
+                current_address: document.getElementById('current_address').value,
+                student_address: {
+                    village: document.getElementById('student_village').value,
+                    post: document.getElementById('student_post').value,
+                    upazila: document.getElementById('student_upazila').value,
+                    district: document.getElementById('student_district').value,
+                    mobile: document.getElementById('student_mobile').value
+                },
+                desired_class: document.getElementById('desired_class').value,
+                previous_class: document.getElementById('previous_class').value || "",
+                previous_school: document.getElementById('previous_school').value || "",
+                special_skill: document.getElementById('special_skill').value || "",
+                special_problem: document.getElementById('special_problem').value || "",
+                application_date: formatDateToDDMMYYYY(rawAppDate),
+                guardian: {
+                    name: document.getElementById('guardian_name').value,
+                    relation: document.getElementById('guardian_relation').value,
+                    profession: document.getElementById('guardian_profession').value,
+                    nid: document.getElementById('guardian_nid').value,
+                    current_address: document.getElementById('guardian_current_address').value,
+                    village: document.getElementById('guardian_village').value,
+                    post: document.getElementById('guardian_post').value,
+                    upazila: document.getElementById('guardian_upazila').value,
+                    district: document.getElementById('guardian_district').value,
+                    mobile: document.getElementById('guardian_mobile').value
+                },
+                fees: {
+                    session: document.getElementById('session_fee').value || "",
+                    electricity: document.getElementById('electricity_bill').value || "",
+                    admission: document.getElementById('admission_fee').value || "",
+                    monthly: document.getElementById('monthly_fee').value || "",
+                    food: document.getElementById('food_fee').value || ""
+                },
+                office_use: {
+                    examiner: document.getElementById('office_examiner').value || "",
+                    result: document.getElementById('office_result').value || "",
+                    annual_result: document.getElementById('office_annual_result').value || "",
+                    approved_class: document.getElementById('approved_class').value || ""
+                },
+                undertaking_name: document.getElementById('undertaking_name').value || "",
+                createdAt: new Date().toISOString() // রিয়েলটাইম এডমিশন টাইমট্র্যাকার
+            };
+
+            // ফায়ারবেস অ্যাপ্লিকেন্টস নোডে ডাটা পুশ
+            database.ref('applicants').push(applicationData)
+            .then(() => {
+                alert("আলহামদুলিল্লাহ, আবেদনটি সফলভাবে ফায়ারবেজ ডাটাবেজে সাবমিট করা হয়েছে!");
+                form.reset(); // ফর্ম খালি করা হলো
+                document.getElementById('photoText').innerHTML = "<span>ছবি</span><span style='font-size: 8.5pt;'>পাসপোর্ট সাইজ</span>";
+                uploadedImageUrl = "";
+                document.getElementById("sameAddressToggle").checked = false;
+            })
+            .catch((error) => {
+                alert("ফায়ারবেজে ডাটা সেভ করতে সমস্যা হয়েছে: " + error.message);
+            })
+            .finally(() => {
+                // বাটন পূর্বের অবস্থায় ফিরিয়ে আনা হলো
+                submitBtn.disabled = false;
+                submitBtn.innerText = "সাবমিট করুন";
+            });
+        });
+    </script>
+</body>
+</html>
